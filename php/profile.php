@@ -1,5 +1,4 @@
 <?php
-
 header('Content-Type: application/json');
 
 $host = "localhost";
@@ -8,19 +7,19 @@ $pass = "";
 $db   = "intern_users";
 
 $conn = new mysqli($host, $user, $pass, $db);
-
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    echo json_encode(["error" => "db connection failed"]);
+    exit;
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    if (!isset($_POST['token']) || empty($_POST['token'])) {
+    if (!isset($_POST['token']) || empty(trim($_POST['token']))) {
         echo json_encode(["error" => "missing token"]);
         exit;
     }
 
-    $token = $_POST['token'];
+    $token = trim($_POST['token']);
 
     try {
         $redis = new Redis();
@@ -33,14 +32,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $user_id = $redis->get($token);
 
     if (!$user_id) {
-        echo json_encode(["error" => "invalid"]);
+        echo json_encode(["error" => "invalid or expired token"]);
         exit;
     }
 
     $stmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
-
     $result = $stmt->get_result();
 
     if ($result->num_rows === 1) {
@@ -51,8 +49,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     $stmt->close();
-    $conn->close();
 
 } else {
     echo json_encode(["error" => "invalid request"]);
 }
+
+$conn->close();
+?>
