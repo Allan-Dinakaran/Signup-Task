@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <title>Login</title>
 </head>
 <body>
@@ -16,7 +17,7 @@
 
             <h3 class="text-center mb-4">Login</h3>
 
-            <form id="loginForm">
+            <form id="loginForm" action="php/login.php" method="POST">
 
                 <div class="mb-3">
                     <label class="form-label">Email</label>
@@ -26,9 +27,10 @@
                 <div class="mb-3">
                     <label class="form-label">Password</label>
                     <input type="password" id="password" class="form-control" placeholder="Enter password">
+                    <img src="assets/eye-close.png" id="eye-close">
                 </div>
 
-                <button type="button" id="loginBtn" class="btn btn-primary w-100">
+                <button type="submit" id="loginBtn" class="btn btn-primary w-100">
                     Login
                 </button>
 
