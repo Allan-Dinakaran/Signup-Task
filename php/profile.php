@@ -1,16 +1,7 @@
 <?php
+require_once __DIR__ . '/../vendor/autoload.php';
+
 header('Content-Type: application/json');
-
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db   = "intern_users";
-
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    echo json_encode(["error" => "db connection failed"]);
-    exit;
-}
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -36,23 +27,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
-    $stmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    try {
+        $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
+        $collection  = $mongoClient->intern_users->profiles;
 
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
-        echo json_encode($user);
-    } else {
-        echo json_encode(["error" => "user not found"]);
+        $profile = $collection->findOne(['mysql_id' => (int)$user_id]);
+
+        if ($profile) {
+            echo json_encode([
+                'name'       => $profile['name'],
+                'email'      => $profile['email'],
+                'age'        => $profile['age'] ?? '',
+                'dob'        => $profile['dob'] ?? '',
+                'contact'    => $profile['contact'] ?? '',
+                'created_at' => (string)$profile['created_at']
+            ]);
+        } else {
+            echo json_encode(["error" => "profile not found"]);
+        }
+
+    } catch (Exception $e) {
+        echo json_encode(["error" => "mongodb failed - " . $e->getMessage()]);
     }
-
-    $stmt->close();
 
 } else {
     echo json_encode(["error" => "invalid request"]);
 }
-
-$conn->close();
 ?>

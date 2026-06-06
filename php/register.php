@@ -1,7 +1,9 @@
 <?php
+require_once __DIR__ . '/../vendor/autoload.php';
+
 $host = "localhost";
 $user = "root";
-$pass = "";
+$pass = "allan1234";
 $db   = "intern_users";
 
 $conn = new mysqli($host, $user, $pass, $db);
@@ -41,12 +43,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $check->close();
 
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
         $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $name, $email, $hashed_password);
 
         if ($stmt->execute()) {
-            echo "success";
+            $mysql_id = $stmt->insert_id;
+
+            try {
+                $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
+                $collection  = $mongoClient->intern_users->profiles;
+
+                $collection->insertOne([
+                    'mysql_id'   => $mysql_id,
+                    'name'       => $name,
+                    'email'      => $email,
+                    'age'        => '',
+                    'dob'        => '',
+                    'contact'    => '',
+                    'created_at' => new MongoDB\BSON\UTCDateTime()
+]);
+
+                echo "success";
+
+            } catch (Exception $e) {
+                echo "error: mongodb failed - " . $e->getMessage();
+            }
+
         } else {
             echo "error: " . $stmt->error;
         }
