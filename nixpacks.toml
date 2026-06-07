@@ -2,7 +2,7 @@
 nixPkgs = ["php83", "php83Extensions.mysqli", "php83Extensions.mongodb", "php83Extensions.redis", "php83Extensions.igbinary", "apacheHttpd", "composer"]
 
 [phases.install]
-cmds = ["composer install --optimize-autoloader --no-scripts --no-interaction --ignore-platform-req=ext-mongodb"]
+cmds = ["composer install --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs"]
 
 [start]
 cmd = "apache2ctl -D FOREGROUND"
