@@ -23,8 +23,9 @@ RUN a2enmod rewrite
 
 RUN chown -R www-data:www-data /var/www/html
 
-EXPOSE 80
+EXPOSE 8080
 
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
+
 CMD ["/start.sh"]
