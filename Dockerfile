@@ -19,12 +19,10 @@ WORKDIR /var/www/html
 
 RUN composer install --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs
 
-RUN a2enmod rewrite && \
-    a2dismod mpm_event && \
-    a2enmod mpm_prefork
+RUN a2enmod rewrite
 
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+CMD ["bash", "-c", "a2dismod mpm_event mpm_worker 2>/dev/null; a2enmod mpm_prefork 2>/dev/null; apache2-foreground"]
