@@ -3,6 +3,8 @@ FROM php:8.3-apache
 RUN apt-get update && apt-get install -y \
     libssl-dev \
     pkg-config \
+    unzip \
+    zip \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pecl install mongodb redis igbinary && \
