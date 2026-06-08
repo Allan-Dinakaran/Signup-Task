@@ -19,4 +19,8 @@ cat /etc/apache2/sites-enabled/000-default.conf
 
 apache2ctl configtest
 
+echo "PORT=$PORT"
+grep Listen /etc/apache2/ports.conf
+grep VirtualHost /etc/apache2/sites-enabled/000-default.conf
+
 apache2-foreground
