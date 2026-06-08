@@ -19,9 +19,9 @@ WORKDIR /var/www/html
 
 RUN composer install --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs
 
-RUN a2enmod rewrite
-RUN a2dismod mpm_event mpm_worker || true
-RUN a2enmod mpm_prefork
+RUN a2enmod rewrite && \
+    a2dismod mpm_event && \
+    a2enmod mpm_prefork
 
 RUN chown -R www-data:www-data /var/www/html
 
