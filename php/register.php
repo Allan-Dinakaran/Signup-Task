@@ -1,11 +1,12 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$host = "localhost";
-$user = "root";
-$pass = "allan1234";
-$db   = "intern_users";
+$host = $_ENV['DB_HOST'];
+$user = $_ENV['DB_USER'];
+$pass = $_ENV['DB_PASS'];
+$db   = $_ENV['DB_NAME'];
 
+// Your connection line looks like this on line 9:
 $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
