@@ -5,9 +5,9 @@ $host = getenv('DB_HOST') ?: 'localhost';
 $user = getenv('DB_USER') ?: 'root';
 $pass = getenv('DB_PASS') ?: 'allan1234';
 $db   = getenv('DB_NAME') ?: 'intern_users';
+$port = getenv('DB_PORT') ?: 3306;
 
-// Your connection line looks like this on line 9:
-$conn = new mysqli($host, $user, $pass, $db);
+$conn = new mysqli($host, $user, $pass, $db, $port);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
