@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$host = $_ENV['DB_HOST'];
-$user = $_ENV['DB_USER'];
-$pass = $_ENV['DB_PASS'];
-$db   = $_ENV['DB_NAME'];
+$host = getenv('DB_HOST') ?: 'localhost';
+$user = getenv('DB_USER') ?: 'root';
+$pass = getenv('DB_PASS') ?: 'allan1234';
+$db   = getenv('DB_NAME') ?: 'intern_users';
 
 // Your connection line looks like this on line 9:
 $conn = new mysqli($host, $user, $pass, $db);
