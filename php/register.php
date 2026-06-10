@@ -51,7 +51,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mysql_id = $stmt->insert_id;
 
             try {
-                $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
+                $mongoUri = getenv('MONGO_URI') ?: 'mongodb://localhost:27017';
+                $mongoClient = new MongoDB\Client($mongoUri);
                 $collection  = $mongoClient->intern_users->profiles;
 
                 $collection->insertOne([
