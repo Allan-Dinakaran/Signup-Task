@@ -40,7 +40,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $contact = trim($_POST['contact'] ?? '');
 
     try {
-        $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
+        $mongo_uri = $_ENV['MONGO_URI'] ?? "mongodb://localhost:27017";
+
+        $mongoClient = new MongoDB\Client($mongo_uri);
         $collection  = $mongoClient->intern_users->profiles;
 
         $collection->updateOne(
