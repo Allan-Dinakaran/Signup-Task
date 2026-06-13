@@ -17,14 +17,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $redis_pass = $_ENV['REDIS_PASS'] ?? null;
 
     try {
-        $redis = new Redis();
-        $redis->connect($redis_host, (int)$redis_port);
+        $redis = new Predis\Client([
+            'scheme'   => 'tcp',
+            'host'     => $redis_host,
+            'port'     => (int)$redis_port,
+                                   'password' => $redis_pass ?: null,
+        ]);
 
-        if ($redis_pass) {
-            $redis->auth($redis_pass);
-        }
+        $redis->ping();
     } catch (Exception $e) {
-        echo json_encode(["error" => "redis failed"]);
+
+        echo json_encode(["error" => "redis failed - " . $e->getMessage()]);
         exit;
     }
 
@@ -50,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 'age'        => $profile['age'] ?? '',
                 'dob'        => $profile['dob'] ?? '',
                 'contact'    => $profile['contact'] ?? '',
-                'created_at' => (string)$profile['created_at']
+                'created_at' => isset($profile['created_at']) ? (string)$profile['created_at'] : ''
             ]);
         } else {
             echo json_encode(["error" => "profile not found"]);

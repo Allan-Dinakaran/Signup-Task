@@ -17,14 +17,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $redis_pass = $_ENV['REDIS_PASS'] ?? null;
 
     try {
-        $redis = new Redis();
-        $redis->connect($redis_host, (int)$redis_port);
+        $redis = new Predis\Client([
+            'scheme'   => 'tcp',
+            'host'     => $redis_host,
+            'port'     => (int)$redis_port,
+                                   'password' => $redis_pass ?: null,
+        ]);
 
-        if ($redis_pass) {
-            $redis->auth($redis_pass);
-        }
+        $redis->ping();
     } catch (Exception $e) {
-        echo json_encode(["error" => "redis failed"]);
+        echo json_encode(["error" => "redis failed - " . $e->getMessage()]);
         exit;
     }
 
@@ -47,11 +49,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $collection->updateOne(
             ['mysql_id' => (int)$user_id],
-            ['$set' => [
-                'age'     => $age,
-                'dob'     => $dob,
-                'contact' => $contact
-            ]]
+                               ['$set' => [
+                                   'age'     => $age,
+                               'dob'     => $dob,
+                               'contact' => $contact
+                               ]]
         );
 
         echo json_encode(["success" => "profile updated"]);
